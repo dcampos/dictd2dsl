@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
 
 from dictdlib import DictReader
-import orjson as json
 import re
+import sys
 
-reader = DictReader('deu-eng')
+if not len(sys.argv) == 3:
+    print(f"Usage: {sys.argv[0]} <path to dict without extension> <path to dsl>")
+    sys.exit(-1)
+
+dict = sys.argv[1]
+outfile = sys.argv[2]
+
+reader = DictReader(dict)
 deflist = reader.getdeflist()
 
-out = open('/opt/GoldenDict/freedict/deu-eng/deu-eng.dsl', 'w+')
+out = open(outfile, 'w+')
 
 out.write('\ufeff')
 
+# CHANGE THESE
 out.write("""#NAME "German - English Ding/FreeDict dictionary"
 #INDEX_LANGUAGE "German"
 #CONTENTS_LANGUAGE "English"
@@ -18,20 +26,16 @@ out.write("""#NAME "German - English Ding/FreeDict dictionary"
 """)
 
 def split_pos(val):
-    # r'[p][i]\1[/i][/p]'
     parts = val.group(1).split(',')
     result = ''
     for part in parts:
         result += f'[p][i]{part}[/i][/p] '
     return result
 
-# with open('deu-eng-fixed.json', 'r+') as file:
 count = 0
 for key in deflist:
     count += 1
     print(f"Adding entry {count}...", end='\r')
-    # data = json.loads(line)
-    # key = list(data.keys())[0]
     for value in reader.getdef(key):
         key = re.sub(r'^ +', '', key)
         out.write(key + '\n')
