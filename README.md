@@ -11,3 +11,8 @@ Convert a dictd (*.dicd + *.index) dictionary to the DSL format
 pip install git+https://github.com/dcampos/dictdlib.git
 ```
 3. Call `convert.py`. The file names are hardcoded right now.
+
+## Limitations
+
+* Formatting is hard-coded and was made for deu-eng from FreeDict.
+* `dictdlib` is *very* slow for compressed (.dz) files. Uncompress first.
